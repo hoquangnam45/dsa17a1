@@ -17,31 +17,7 @@ struct Data {
     int flag;
     int flag_copy;
 };
-/// Initialize and Finalize any global data that you use in the program
-// bool Test2chieu(L1List<L1List<VRecord>> &NewDataList, int& flag){
-//     int flag=1;
-//     L1Item<L1List<VRecord>>* pFirst = NewDataList.getpHead();
-//     if (flag == 1){
-//     while (pFirst!= NULL){
-//         L1Item<VRecord>* tester = pFirst->data.getpHead();
-//         L1Item<VRecord>* child =  tester;
-//         while(child->pNext !=NULL){
-//             if (strcmp(tester->data.id,child->pNext->data.id)!=0){
-//                 cout<< child->data.id;
-//                 flag=0;
-//                 break;
-//             }
-//             else{
-//                 child=child->pNext;
-//             }
-//         }
-//         pFirst=pFirst->pNext;
-//     }
-//     if(flag) return true;
-//     else return false;
-//      flag++;
-//      }
-// }
+
 bool CreateListID(L1List<VRecord>& recList, L1List<L1List<VRecord>> &NewDataList, int &flag) {
     if(flag == 0) {
         while(recList.getSize()) {
@@ -132,63 +108,60 @@ bool processRequest(VRequest& request, L1List<VRecord>& recList, void* pGData) {
     /// end by the end-line '\n' character.
     Data* pGList = (Data*) pGData;
     CopyRec(recList,pGList->CopyDataList, pGList->flag_copy);
-    if(CreateListID(recList, pGList->NewDataList, pGList->flag)) {
-    }
-    else {
-    }
+    CreateListID(recList, pGList->NewDataList, pGList->flag);
+
     //Test2chieu(pGList->NewDataList, pGList->flag);
-    switch(request.code[0]) {
-        case 'C': {
-            switch(request.code[1]) {
-                case 'N': {
-                    switch(request.code[2]) {
-                        case 'V': {
-                            cout<<"CNV: ";
-                            cout << pGList->NewDataList.getSize() << endl;
-                            break;
-                        }
-                        case 'R': {
-                            cout<< "CNR: ";
-                            cout <<  pGList->CopyDataList.getSize() << endl;
-                            break;
-                        }
-                        default: {
-                            L1Item<L1List<VRecord>>* pFirst = pGList->NewDataList.getpHead();
-                            // int t = 0;
-                            // char** idmove=new char*[pGList->NewDataList.getSize()];
-                            int idmove=0;
-                            int flagmov=0;
-                            while (pFirst!= NULL){
-                                L1Item<VRecord>* child = pFirst->data.getpHead();
-                                while (child->pNext != NULL)
-                                {
-                                    
-                                    if (distanceVR(child->data.y,child->data.x,child->pNext->data.y,child->pNext->data.x) <= STOP){
-                                       flagmov=1;
-                                    } 
-                                    child=child->pNext;
-                                }
-                                if (flagmov==0) {
-                                    idmove++;
-                                }
-                                pFirst=pFirst->pNext;
-                                flagmov = 0;
-                            }
-                            if (idmove==0){
-                                cout<<request.code;
-                                cout<<": Failed";
-                                cout<<endl;
-                            }
-                            else{
-                                cout<<request.code;
-                                cout<<": ";
-                                cout << idmove;
-                                cout<<endl;
-                            }
-                        }
-                    }
-                    break;
-                }
+    if (strncmp(request.code, "CNV", 3)){
+        if (strlen(request.code) == 3){
+            cout << "CNV: ";
+            cout << pGList->NewDataList.getSize() << endl;
+        }
+        else cout << request.code << ": not found!" << endl;
+    }
+
+    else if (strncmp(request.code, "CNR", 3)){
+        if (strlen(request.code) == 3){
+            cout<< "CNR: ";
+            cout <<  pGList->CopyDataList.getSize() << endl;
+        }
+        else cout << request.code << ": not found!" << endl;
+    }
+
+    else if (strncmp(request.code, "CNS", 3)){
+        L1Item<L1List<VRecord>>* pFirst = pGList->NewDataList.getpHead();
+        // int t = 0;
+        // char** idmove=new char*[pGList->NewDataList.getSize()];
+        int idmove=0;
+        int flagmov=0;
+        while (pFirst!= NULL){
+            L1Item<VRecord>* child = pFirst->data.getpHead();
+            while (child->pNext != NULL)
+            {
+                
+                if (distanceVR(child->data.y,child->data.x,child->pNext->data.y,child->pNext->data.x) <= STOP){
+                    flagmov=1;
+                } 
+                child=child->pNext;
+            }
+            if (flagmov==0) {
+                idmove++;
+            }
+            pFirst=pFirst->pNext;
+            flagmov = 0;
+        }
+        if (idmove==0){
+            cout<<request.code;
+            cout<<": Failed";
+            cout<<endl;
+        }
+        else{
+            cout<<request.code;
+            cout<<": ";
+            cout << idmove;
+            cout<<endl;
+        }
+    }
+
                 default: {
                     L1Item<L1List<VRecord>>* pFirst = pGList->NewDataList.getpHead();
                     double sumdis=0 ;
